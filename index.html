@@ -1,0 +1,857 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Museum Edukasi Universitas Negeri Malang</title>
+    <meta name="description" content="Museum Edukasi Universitas Negeri Malang">
+
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&display=swap" rel="stylesheet">
+
+    <script src="https://cdn.tailwindcss.com"></script>
+    <script src="https://unpkg.com/lucide@latest"></script>
+
+    <script>
+        tailwind.config = {
+            theme: {
+                extend: {
+                    fontFamily: {
+                        sans: ['Inter', 'sans-serif'],
+                    },
+                    colors: {
+                        bg: '#050505',
+                        surface: '#121212',
+                        card: '#0A0A0A',
+                        'text-primary': '#FFFFFF',
+                        'text-secondary': '#A1A1AA',
+                        'text-dim': '#52525B',
+                        'brand-blue': '#0091FF',
+                        'brand-gold': '#FFC800',
+                        'brand-cyan': '#00E5FF',
+                    },
+                    animation: {
+                        'scroll-left': 'scroll-left 40s linear infinite',
+                        'float': 'float 6s ease-in-out infinite',
+                        'glow-pulse': 'glow-pulse 3s ease-in-out infinite',
+                    },
+                    keyframes: {
+                        'scroll-left': {
+                            '0%': { transform: 'translateX(0)' },
+                            '100%': { transform: 'translateX(-50%)' },
+                        },
+                        'float': {
+                            '0%, 100%': { transform: 'translateY(0px)' },
+                            '50%': { transform: 'translateY(-20px)' },
+                        },
+                        'glow-pulse': {
+                            '0%, 100%': { opacity: '0.4' },
+                            '50%': { opacity: '1' },
+                        },
+                    },
+                },
+            },
+        }
+    </script>
+
+    <style>
+        html {
+            scroll-behavior: smooth;
+        }
+
+        ::-webkit-scrollbar { width: 6px; }
+        ::-webkit-scrollbar-track { background: #050505; }
+        ::-webkit-scrollbar-thumb { background: #52525B; border-radius: 3px; }
+        ::-webkit-scrollbar-thumb:hover { background: #A1A1AA; }
+
+        .grid-pattern {
+            background-image: 
+                linear-gradient(rgba(255,255,255,0.03) 1px, transparent 1px),
+                linear-gradient(90deg, rgba(255,255,255,0.03) 1px, transparent 1px);
+            background-size: 50px 50px;
+        }
+
+        .reveal-on-scroll {
+            opacity: 0;
+            transform: translateY(30px);
+            filter: blur(5px);
+            transition: all 1s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .reveal-on-scroll.is-visible {
+            opacity: 1;
+            transform: translateY(0);
+            filter: blur(0);
+        }
+
+        .delay-100 { transition-delay: 100ms; }
+        .delay-200 { transition-delay: 200ms; }
+        .delay-300 { transition-delay: 300ms; }
+        .delay-400 { transition-delay: 400ms; }
+        .delay-500 { transition-delay: 500ms; }
+
+        .photo-reveal {
+            clip-path: inset(0 100% 0 0);
+            transition: clip-path 1.2s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .photo-reveal.is-visible {
+            clip-path: inset(0 0 0 0);
+        }
+
+        .text-gradient-gold {
+            background: linear-gradient(to right, #FFC800, #FF8C00);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .text-gradient-blue {
+            background: linear-gradient(to right, #0091FF, #00E5FF);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .batik-pattern {
+            background-image: radial-gradient(circle at 25% 25%, rgba(255,200,0,0.03) 0%, transparent 50%),
+                              radial-gradient(circle at 75% 75%, rgba(0,145,255,0.03) 0%, transparent 50%);
+        }
+
+        .card-hover {
+            transition: all 0.4s ease;
+        }
+        .card-hover:hover {
+            transform: translateY(-4px);
+            border-color: rgba(255, 200, 0, 0.3);
+            box-shadow: 0 20px 40px -15px rgba(255, 200, 0, 0.1);
+        }
+
+        .nav-link {
+            position: relative;
+        }
+        .nav-link::after {
+            content: '';
+            position: absolute;
+            bottom: -4px;
+            left: 0;
+            width: 0;
+            height: 2px;
+            background: #FFC800;
+            transition: width 0.3s ease;
+        }
+        .nav-link:hover::after {
+            width: 100%;
+        }
+
+        .marquee-track {
+            display: flex;
+            width: max-content;
+        }
+
+        .img-zoom {
+            transition: transform 0.6s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .img-zoom:hover {
+            transform: scale(1.05);
+        }
+
+        .mobile-menu {
+            transform: translateX(100%);
+            transition: transform 0.4s cubic-bezier(0.16, 1, 0.3, 1);
+        }
+        .mobile-menu.open {
+            transform: translateX(0);
+        }
+    </style>
+</head>
+
+<body class="bg-bg text-text-primary font-sans overflow-x-hidden">
+
+    <!-- NAVIGATION BAR -->
+    <nav id="navbar" class="fixed top-0 left-0 right-0 z-50 transition-all duration-300">
+        <div class="max-w-7xl mx-auto px-6 py-4 flex items-center justify-between">
+            
+            <a href="#" class="flex items-center gap-3 group">
+                <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-gold to-brand-blue flex items-center justify-center transition-transform duration-300 group-hover:scale-110">
+                    <i data-lucide="building-2"> class="w-5 h-5 text-black"></i>
+                </div>
+                <span class="text-lg font-semibold tracking-tight">Museum<span class="text-brand-gold">UM</span></span>
+            </a>
+
+            <div class="hidden md:flex items-center gap-8">
+                <a href="#arti" class="nav-link text-sm text-text-secondary hover:text-text-primary transition-colors">Tentang Museum</a>
+                <a href="#sejarah" class="nav-link text-sm text-text-secondary hover:text-text-primary transition-colors">Sejarah</a>
+                <a href="#filosofi" class="nav-link text-sm text-text-secondary hover:text-text-primary transition-colors">Filosofi</a>
+                <a href="#galeri" class="nav-link text-sm text-text-secondary hover:text-text-primary transition-colors">Galeri</a>
+            </div>
+
+            <div class="hidden md:flex items-center gap-4">
+                <a href="#filosofi" class="px-6 py-2.5 bg-brand-gold text-black text-sm font-bold uppercase tracking-wide rounded-full hover:-translate-y-1 transition-all duration-300 hover:shadow-[0_0_30px_rgba(255,200,0,0.3)]">
+                    Pelajari
+                </a>
+            </div>
+
+            <button id="menuToggle" class="md:hidden p-2 text-text-secondary hover:text-text-primary transition-colors">
+                <i data-lucide="menu" class="w-6 h-6"></i>
+            </button>
+        </div>
+    </nav>
+
+    <!-- Mobile Menu -->
+    <div id="mobileMenu" class="mobile-menu fixed top-0 right-0 bottom-0 w-72 bg-surface/95 backdrop-blur-xl z-50 p-8 flex flex-col">
+        <button id="menuClose" class="self-end p-2 text-text-secondary hover:text-text-primary mb-8">
+            <i data-lucide="x" class="w-6 h-6"></i>
+        </button>
+        <div class="flex flex-col gap-6">
+            <a href="#arti" class="text-lg text-text-secondary hover:text-brand-gold transition-colors mobile-link">Tentang Museum</a>
+            <a href="#sejarah" class="text-lg text-text-secondary hover:text-brand-gold transition-colors mobile-link">Sejarah</a>
+            <a href="#filosofi" class="text-lg text-text-secondary hover:text-brand-gold transition-colors mobile-link">Filosofi</a>
+            <a href="#galeri" class="text-lg text-text-secondary hover:text-brand-gold transition-colors mobile-link">Galeri</a>
+        </div>
+        <a href="#filosofi" class="mt-auto px-6 py-3 bg-brand-gold text-black text-sm font-bold uppercase tracking-wide rounded-full text-center mobile-link">
+            Pelajari
+        </a>
+    </div>
+    <div id="menuOverlay" class="fixed inset-0 bg-black/60 z-40 opacity-0 pointer-events-none transition-opacity duration-300"></div>
+
+
+    <!-- HERO SECTION -->
+    <section class="min-h-screen flex flex-col items-center justify-center relative grid-pattern">
+        
+        <div class="absolute top-1/4 -left-32 w-96 h-96 bg-brand-gold/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute bottom-1/4 -right-32 w-96 h-96 bg-brand-blue/10 rounded-full blur-[120px] pointer-events-none"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-cyan/5 rounded-full blur-[150px] pointer-events-none"></div>
+
+        <div class="relative z-10 text-center px-6 max-w-5xl mx-auto">
+            
+            <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-gold/20 bg-brand-gold/5 backdrop-blur-md mb-8 reveal-on-scroll">
+                <i data-lucide="sparkles" class="w-4 h-4 text-brand-gold"></i>
+                <span class="text-xs font-medium uppercase tracking-wider text-brand-gold">tugas sejarah website</span>
+            </div>
+
+            <h1 class="text-5xl md:text-8xl font-semibold leading-[0.95] tracking-tighter mb-8 reveal-on-scroll delay-100">
+                Museum<br>
+                <span class="text-gradient-gold">UM</span>
+            </h1>
+
+            <p class="text-xl md:text-2xl font-light text-text-secondary leading-relaxed max-w-2xl mx-auto mb-12 reveal-on-scroll delay-200">
+                Menelusuri jejak sejarah pendidikan, alat pembelajaran, dan perjalanan panjang dunia akademik melalui koleksi autentik yang tersimpan di dalam kampus.
+
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 reveal-on-scroll delay-300">
+                <a href="#arti" class="px-8 py-4 bg-brand-gold text-black text-sm font-bold uppercase tracking-wide rounded-full hover:-translate-y-1 hover:shadow-[0_0_50px_rgba(255,200,0,0.4)] transition-all duration-300">
+                    Jelajahi Sekarang
+                </a>
+                <a href="#sejarah" class="px-8 py-4 border border-white/10 text-text-primary text-sm font-medium uppercase tracking-wide rounded-full hover:border-white/30 hover:-translate-y-1 transition-all duration-300">
+                    Lihat Sejarah
+                </a>
+            </div>
+        </div>
+
+        <div class="absolute bottom-8 left-1/2 -translate-x-1/2 flex flex-col items-center gap-2 reveal-on-scroll delay-500">
+            <span class="text-xs text-text-dim uppercase tracking-widest">Scroll</span>
+            <i data-lucide="chevron-down" class="w-4 h-4 text-text-dim animate-bounce"></i>
+        </div>
+
+        <div class="absolute bottom-0 left-0 right-0 h-32 bg-gradient-to-t from-bg to-transparent pointer-events-none"></div>
+    </section>
+
+
+    <!-- MARQUEE SECTION -->
+    <section class="overflow-hidden py-8 border-y border-white/5">
+        <div class="marquee-track animate-scroll-left">
+            <span class="flex items-center gap-8 px-4">
+                <span class="text-2xl font-semibold text-text-dim/30 whitespace-nowrap">KOLEKSI KUNO</span>
+                <span class="text-brand-gold/30">✦</span>
+                <span class="text-2xl font-semibold text-text-dim/30 whitespace-nowrap">KEARIFAN LOKAL</span>
+                <span class="text-brand-blue/30">✦</span>
+                <span class="text-2xl font-semibold text-text-dim/30 whitespace-nowrap">MALANG</span>
+                <span class="text-brand-gold/30">✦</span>
+                <span class="text-2xl font-semibold text-text-dim/30 whitespace-nowrap">TRADISI</span>
+                <span class="text-brand-cyan/30">✦</span>
+                <span class="text-2xl font-semibold text-text-dim/30 whitespace-nowrap">BUDAYA</span>
+                <span class="text-brand-gold/30">✦</span>
+                <span class="text-2xl font-semibold text-text-dim/30 whitespace-nowrap">FILOSOFI</span>
+                <span class="text-brand-blue/30">✦</span>
+                <span class="text-2xl font-semibold text-text-dim/30 whitespace-nowrap">WARISAN LELUHUR</span>
+                <span class="text-brand-gold/30">✦</span>
+            </span>
+            <span class="flex items-center gap-8 px-4">
+                <span class="text-2xl font-semibold text-text-dim/30 whitespace-nowrap">Museum UMㅤ</span>
+                <span class="text-brand-gold/30">✦</span>
+                <span class="text-2xl font-semibold text-text-dim/30 whitespace-nowrap">KEARIFAN LOKAL</span>
+                <span class="text-brand-blue/30">✦</span>
+                <span class="text-2xl font-semibold text-text-dim/30 whitespace-nowrap">MALANG</span>
+                <span class="text-brand-gold/30">✦</span>
+                <span class="text-2xl font-semibold text-text-dim/30 whitespace-nowrap">TRADISI</span>
+                <span class="text-brand-cyan/30">✦</span>
+                <span class="text-2xl font-semibold text-text-dim/30 whitespace-nowrap">BUDAYA</span>
+                <span class="text-brand-gold/30">✦</span>
+                <span class="text-2xl font-semibold text-text-dim/30 whitespace-nowrap">FILOSOFI</span>
+                <span class="text-brand-blue/30">✦</span>
+                <span class="text-2xl font-semibold text-text-dim/30 whitespace-nowrap">WARISAN LELUHUR</span>
+                <span class="text-brand-gold/30">✦</span>
+            </span>
+        </div>
+    </section>
+
+
+    <!-- ARTI  SECTION -->
+    <section id="arti" class="py-32 relative batik-pattern">
+        <div class="max-w-7xl mx-auto px-6">
+            
+            <div class="text-center mb-20">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-brand-blue/20 bg-brand-blue/5 mb-6 reveal-on-scroll">
+                    <i data-lucide="book-open" class="w-3.5 h-3.5 text-brand-blue"></i>
+                    <span class="text-xs font-medium uppercase tracking-wider text-brand-blue">Pengertian</span>
+                </div>
+                <h2 class="text-4xl md:text-6xl font-semibold tracking-tight mb-6 reveal-on-scroll delay-100">
+                    Museum <span class="text-gradient-blue"><br>Pembelajaran UM</span>
+                </h2>
+                <p class="text-lg md:text-xl font-light text-text-secondary leading-relaxed max-w-3xl mx-auto reveal-on-scroll delay-200">
+                    Museum Pembelajaran UM adalah museum edukasi yang berada di lingkungan Universitas Negeri Malang yang menyimpan, merawat, dan menampilkan berbagai koleksi bersejarah terkait perkembangan pendidikan, alat pembelajaran, serta perjalanan institusi UM dari masa ke masa.
+
+                </p>
+            </div>
+
+            <div class="grid md:grid-cols-2 gap-12 items-center">
+                
+                <div class="space-y-6 reveal-on-scroll delay-100">
+                    <p class="text-lg text-text-secondary leading-relaxed">
+                        <span class="text-brand-gold font-semibold">Museum ini bukan sekadar tempat menyimpan barang lama, tetapi menjadi: <br>
+</span> Pusat literasi sejarah pendidikan
+Sumber pembelajaran kontekstual
+Ruang refleksi perjalanan akademik
+Media inspirasi generasi penerus
+Museum ini menunjukkan bahwa pendidikan memiliki sejarah panjang yang dibangun oleh alat, metode, dan manusia di dalamnya.</em>
+                    </p>
+                    <p class="text-lg text-text-secondary leading-relaxed">
+                        <span class="text-brand-gold font-semibold">Karakter Museum:
+</span> <br>🗂️ Arsip Pendidikan — Dokumen, ijazah, KTM, arsip akademik lama  <br>🔬 Alat Pembelajaran — Mikroskop, proyektor, alat laboratorium klasik  <br>📺 Media Pembelajaran — Perangkat studio TV, alat peraga, media visual lama  <br>🚲 Artefak Unik — Sepeda kurir surat antar fakultas tempo dulu.<em>
+                    </p>
+                    <p class="text-lg text-text-secondary leading-relaxed">
+                        
+                    </p>
+
+                    <div class="grid grid-cols-2 gap-4 pt-4">
+                        <div class="p-4 rounded-2xl bg-surface border border-white/5 card-hover">
+                            <i data-lucide="archive" class="w-6 h-6 text-brand-gold mb-2"></i>
+                            <h4 class="text-sm font-semibold mb-1">Koleksi Edukasi</h4>
+                            <p class="text-xs text-text-dim">Menyimpan alat dan media pembelajaran dari masa ke masa</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-surface border border-white/5 card-hover">
+                            <i data-lucide="book-open" class="w-6 h-6 text-brand-blue mb-2"></i>
+                            <h4 class="text-sm font-semibold mb-1">Arsip Akademik</h4>
+                            <p class="text-xs text-text-dim">Dokumen ijazah, KTM, dan administrasi kampus tempo dulu</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-surface border border-white/5 card-hover">
+                            <i data-lucide="map-pin" class="w-6 h-6 text-brand-cyan mb-2"></i>
+                            <h4 class="text-sm font-semibold mb-1">Lingkungan Kampus</h4>
+                            <p class="text-xs text-text-dim">Kesenian khas Jawa Barat</p>
+                        </div>
+                        <div class="p-4 rounded-2xl bg-surface border border-white/5 card-hover">
+                            <i data-lucide="palette" class="w-6 h-6 text-brand-gold mb-2"></i>
+                            <h4 class="text-sm font-semibold mb-1">Seni Rupa</h4>
+                            <p class="text-xs text-text-dim">Ukiran dan lukisan tradisional</p>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="relative reveal-on-scroll delay-200">
+                    <div class="relative rounded-3xl overflow-hidden border border-white/5 shadow-2xl">
+                        <img src="https://i.ibb.co/MDrFgP3G/PXL-20260512-163029920.jpg" 
+                             alt="UM" 
+                             class="w-full h-auto object-cover photo-reveal">
+                        <div class="absolute bottom-0 left-0 right-0 h-1/2 bg-gradient-to-t from-bg via-bg/50 to-transparent"></div>
+                        <div class="absolute bottom-6 left-6 right-6">
+                            <p class="text-sm text-text-secondary font-light">Kelompok Museum UM <br> Luky Irfandi/10<br> Rasya Fahrilana A.S/17</p>
+            
+                        </div>
+                    </div>
+                    <div class="absolute -top-4 -right-4 w-32 h-32 border border-brand-gold/10 rounded-2xl -z-10"></div>
+                    <div class="absolute -bottom-4 -left-4 w-24 h-24 border border-brand-blue/10 rounded-2xl -z-10"></div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- SEJARAH SECTION -->
+    <section id="sejarah" class="py-32 relative">
+        <div class="absolute top-0 right-0 w-[500px] h-[500px] bg-brand-blue/5 rounded-full blur-[150px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-6">
+            
+            <div class="text-center mb-20">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-brand-gold/20 bg-brand-gold/5 mb-6 reveal-on-scroll">
+                    <i data-lucide="clock" class="w-3.5 h-3.5 text-brand-gold"></i>
+                    <span class="text-xs font-medium uppercase tracking-wider text-brand-gold">Linimasa</span>
+                </div>
+                <h2 class="text-4xl md:text-6xl font-semibold tracking-tight mb-6 reveal-on-scroll delay-100">
+                    Sejarah <span class="text-gradient-gold">Singkatㅤㅤ</span>
+                </h2>
+                <p class="text-lg md:text-xl font-light text-text-secondary leading-relaxed max-w-3xl mx-auto reveal-on-scroll delay-200">
+                    
+Perkembangan Museum Perjalanan museum ini mengikuti perjalanan UM sendiri.
+
+                </p>
+            </div>
+
+            <div class="relative max-w-4xl mx-auto">
+                
+                <div class="absolute left-1/2 top-0 bottom-0 w-px bg-gradient-to-b from-transparent via-brand-gold/20 to-transparent hidden md:block"></div>
+
+                <div class="flex flex-col md:flex-row items-center gap-8 mb-16 reveal-on-scroll">
+                    <div class="md:w-1/2 md:text-right md:pr-12">
+                        <span class="text-brand-gold font-mono text-sm"></span>
+                        <h3 class="text-2xl font-medium mt-2 mb-3">Masa IKIP Malang (awal Berdiri)</h3>
+                        <p class="text-text-secondary font-light leading-relaxed">
+                            Pada masa UM masih bernama IKIP Malang, berbagai alat pembelajaran mulai dikumpulkan sebagai arsip pendidikan. Kesadaran untuk menyimpan sejarah pendidikan mulai tumbuh.
+                        </p>
+                    </div>
+                    <div class="w-4 h-4 rounded-full bg-brand-gold border-4 border-bg z-10 shrink-0 hidden md:block"></div>
+                    <div class="md:w-1/2 md:pl-12">
+                        <div class="rounded-2xl overflow-hidden border border-white/5">
+                            <img src="https://i.ibb.co.com/Q7WPS9Qs/stamp-20260512-161743.jpg" alt="Museum" class="w-full h-48 object-cover img-zoom">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row-reverse items-center gap-8 mb-16 reveal-on-scroll delay-100">
+                    <div class="md:w-1/2 md:text-left md:pl-12">
+                        <span class="text-brand-blue font-mono text-sm"></span>
+                        <h3 class="text-2xl font-medium mt-2 mb-3">Priode Pengembangan Koleksi</h3>
+                        <p class="text-text-secondary font-light leading-relaxed">
+                            Seiring waktu, banyak dosen dan civitas akademika menyumbangkan alat-alat lama yang pernah digunakan dalam proses belajar mengajar.
+                        </p>
+                    </div>
+                    <div class="w-4 h-4 rounded-full bg-brand-blue border-4 border-bg z-10 shrink-0 hidden md:block"></div>
+                    <div class="md:w-1/2 md:pr-12">
+                        <div class="rounded-2xl overflow-hidden border border-white/5">
+                            <img src="https://i.ibb.co.com/RpSQWmPg/stamp-20260512-161958.jpg" alt="Pengaruh Islam" class="w-full h-48 object-cover img-zoom">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row items-center gap-8 mb-16 reveal-on-scroll delay-200">
+                    <div class="md:w-1/2 md:text-right md:pr-12">
+                        <span class="text-brand-cyan font-mono text-sm"></span>
+                        <h3 class="text-2xl font-medium mt-2 mb-3">Pembentukan Resmi Museum Edukasi</h3>
+                        <p class="text-text-secondary font-light leading-relaxed">
+                           Koleksi yang semakin banyak kemudian ditata dan diresmikan menjadi museum pembelajaran agar dapat dimanfaatkan oleh mahasiswa dan pengunjung.
+                        </p>
+                    </div>
+                    <div class="w-4 h-4 rounded-full bg-brand-cyan border-4 border-bg z-10 shrink-0 hidden md:block"></div>
+                    <div class="md:w-1/2 md:pl-12">
+                        <div class="rounded-2xl overflow-hidden border border-white/5">
+                            <img src="https://i.ibb.co.com/XfdtNSwq/stamp-20260512-162020.jpg" alt="Masa Keemasan" class="w-full h-48 object-cover img-zoom">
+                        </div>
+                    </div>
+                </div>
+
+                <div class="flex flex-col md:flex-row-reverse items-center gap-8 reveal-on-scroll delay-300">
+                    <div class="md:w-1/2 md:text-left md:pl-12">
+                        <span class="text-brand-gold font-mono text-sm"></span>
+                        <h3 class="text-2xl font-medium mt-2 mb-3">Era Modern</h3>
+                        <p class="text-text-secondary font-light leading-relaxed">
+                            Museum terus dikembangkan sebagai pusat kajian sejarah pendidikan di Indonesia Timur dan menjadi bagian dari kegiatan akademik, riset, dan kunjungan edukatif.
+                        </p>
+                    </div>
+                    <div class="w-4 h-4 rounded-full bg-brand-gold border-4 border-bg z-10 shrink-0 hidden md:block"></div>
+                    <div class="md:w-1/2 md:pr-12">
+                        <div class="rounded-2xl overflow-hidden border border-white/5">
+                            <img src="https://i.ibb.co.com/Y4qbVybk/stamp-20260512-161948.jpg" alt="Era Modern" class="w-full h-48 object-cover img-zoom">
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- FILOSOFI SECTION -->
+    <section id="filosofi" class="py-32 bg-surface relative overflow-hidden">
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[800px] h-[800px] bg-brand-gold/3 rounded-full blur-[200px] pointer-events-none"></div>
+        <div class="grid-pattern absolute inset-0 pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-6 relative z-10">
+            
+            <div class="text-center mb-20">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-brand-cyan/20 bg-brand-cyan/5 mb-6 reveal-on-scroll">
+                    <i data-lucide="brain" class="w-3.5 h-3.5 text-brand-cyan"></i>
+                    <span class="text-xs font-medium uppercase tracking-wider text-brand-cyan">Pemikiran Mendalam</span>
+                </div>
+                <h2 class="text-4xl md:text-6xl font-semibold tracking-tight mb-6 reveal-on-scroll delay-100">
+                    Filosofi <span class="text-gradient-blue">Museum UM ㅤㅤ </span>
+                </h2>
+                <p class="text-lg md:text-xl font-light text-text-secondary leading-relaxed max-w-3xl mx-auto reveal-on-scroll delay-200">
+                    <strong>Museum Pembelajaran UM</strong> bukan sekadar ruang penyimpanan benda lama — ia adalah <strong> cermin perjalanan pendidikan</strong> yang mengajarkan nilai-nilai luhur tentang proses belajar, perjuangan akademik, dan perkembangan ilmu pengetahuan dari masa ke masa.
+Setiap alat, arsip, dan koleksi yang tersimpan di dalamnya merepresentasikan <strong>dedikasi pendidik, semangat belajar mahasiswa,</strong> serta<strong>evolusi metode pembelajaran </strong> yang membentuk wajah pendidikan hari ini.
+                </p>
+            </div>
+
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6">
+                
+                <div class="group p-8 rounded-3xl bg-card border border-white/5 card-hover reveal-on-scroll relative">
+                    <div class="w-14 h-14 rounded-2xl bg-brand-gold/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i data-lucide="eye" class="w-7 h-7 text-brand-gold"></i>
+                    </div>
+                    <h3 class="text-2xl font-medium mb-4">Cermin Sejarah Pendidikan</h3>
+                    <p class="text-text-secondary font-light leading-relaxed">
+                        Museum Pembelajaran UM menjadi cermin perjalanan panjang dunia pendidikan. Setiap alat, dokumen, dan arsip yang tersimpan menunjukkan bagaimana proses belajar berkembang dari masa ke masa — dari metode sederhana hingga teknologi modern.
+                    </p>
+                    <span class="text-6xl font-bold text-white/[0.03] absolute top-4 right-6">01</span>
+                </div>
+
+                <div class="group p-8 rounded-3xl bg-card border border-white/5 card-hover reveal-on-scroll delay-100 relative">
+                    <div class="w-14 h-14 rounded-2xl bg-brand-blue/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i data-lucide="compass" class="w-7 h-7 text-brand-blue"></i>
+                    </div>
+                    <h3 class="text-2xl font-medium mb-4">Lokasi Museum</h3>
+                    <p class="text-text-secondary font-light leading-relaxed">
+                       Terletak di Gedung A14, Fakultas Ilmu Sosial (FIS), di dalam lingkungan Universitas Negeri Malang.<br>
+Museum ini berada di area kampus yang mudah dijangkau oleh mahasiswa dan pengunjung karena posisinya masih dalam kawasan utama perkuliahan.
+                    </p>
+                    <span class="text-6xl font-bold text-white/[0.03] absolute top-4 right-6">02</span>
+                </div>
+
+                <div class="group p-8 rounded-3xl bg-card border border-white/5 card-hover reveal-on-scroll delay-200 relative">
+                    <div class="w-14 h-14 rounded-2xl bg-brand-cyan/10 flex items-center justify-center mb-6 group-hover:scale-110 transition-transform duration-300">
+                        <i data-lucide="heart-handshake" class="w-7 h-7 text-brand-cyan"></i>
+                    </div>
+                    <h3 class="text-2xl font-medium mb-4">Harmoni Masa Lalu dan Masa Kini</h3>
+                    <p class="text-text-secondary font-light leading-relaxed">
+                        Museum menghadirkan keseimbangan antara sejarah dan perkembangan zaman. Mahasiswa dapat melihat bahwa inovasi pendidikan hari ini lahir dari proses panjang di masa lalu. Perbedaan zaman justru menciptakan harmoni dalam perkembangan ilmu pengetahuan.
+                    </p>
+                    <span class="text-6xl font-bold text-white/[0.03] absolute top-4 right-6">03</span>
+                </div>
+            </div>
+
+            <div class="mt-20 p-8 md:p-12 rounded-3xl bg-card border border-brand-gold/10 relative overflow-hidden reveal-on-scroll">
+                <div class="absolute top-4 left-6 text-8xl text-brand-gold/10 font-serif leading-none">"</div>
+                <div class="relative z-10 max-w-3xl mx-auto text-center">
+                    <p class="text-xl md:text-2xl font-light text-text-secondary leading-relaxed italic mb-6">
+                        "Pendidikan bukan hanya tentang masa kini, tetapi juga memahami perjalanan ilmu dan sejarah yang membentuk generasi."
+                    </p>
+                    <div class="flex items-center justify-center gap-3">
+                        <div class="w-10 h-10 rounded-full bg-brand-gold/10 flex items-center justify-center">
+                            <i data-lucide="user" class="w-5 h-5 text-brand-gold"></i>
+                        </div>
+                        <div class="text-left">
+                            <p class="text-sm font-medium">Museum Edukasi UM
+</p>
+                            <p class="text-xs text-text-dim">Filosofi Pendidikan</p>
+                        </div>
+                    </div>
+                </div>
+                <div class="absolute bottom-4 right-6 text-8xl text-brand-gold/10 font-serif leading-none rotate-180">"</div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- ============================================= -->
+    <!-- GALERI SECTION — FRAME LANDSCAPE              -->
+    <!-- Tinggi diperpendek agar foto landscape         -->
+    <!-- cukup terlihat & watermark tidak terpotong     -->
+    <!-- ============================================= -->
+    <section id="galeri" class="py-32 relative">
+        <div class="absolute bottom-0 left-0 w-[500px] h-[500px] bg-brand-gold/5 rounded-full blur-[150px] pointer-events-none"></div>
+
+        <div class="max-w-7xl mx-auto px-6">
+            
+            <div class="text-center mb-20">
+                <div class="inline-flex items-center gap-2 px-3 py-1.5 rounded-full border border-brand-gold/20 bg-brand-gold/5 mb-6 reveal-on-scroll">
+                    <i data-lucide="image" class="w-3.5 h-3.5 text-brand-gold"></i>
+                    <span class="text-xs font-medium uppercase tracking-wider text-brand-gold">Dokumentasi</span>
+                </div>
+                <h2 class="text-4xl md:text-6xl font-semibold tracking-tight mb-6 reveal-on-scroll delay-100">
+                    Galeri <span class="text-gradient-gold">Museumㅤㅤ</span>
+                </h2>
+                <p class="text-lg md:text-xl font-light text-text-secondary leading-relaxed max-w-3xl mx-auto reveal-on-scroll delay-200">
+                    Dokumentasi bangunan Museum Edukasi UM.
+                </p>
+            </div>
+
+            <!-- Gallery Grid: Layout 2 kolom dengan frame landscape -->
+            <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+                
+                <!-- Gallery Item 1 — landscape -->
+                <div class="rounded-3xl overflow-hidden border border-white/5 group reveal-on-scroll">
+                    <div class="relative h-52 md:h-72 overflow-hidden">
+                        <img src=https://i.ibb.co.com/VpwvBnTY/stamp-20260512-161952.jpg" 
+                             alt="" 
+                             class="w-full h-full object-cover img-zoom">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+                            <div>
+                                <h4 class="text-lg font-medium">Koleksi Museum</h4>
+                                <p class="text-sm text-text-secondary">Ada banyak alat pembelajaran yang bisa kita temui di dalam Museum</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 2 — landscape -->
+                <div class="rounded-3xl overflow-hidden border border-white/5 group reveal-on-scroll delay-100">
+                    <div class="relative h-52 md:h-72 overflow-hidden">
+                        <img src="https://i.ibb.co.com/Y4qbVybk/stamp-20260512-161948.jpg" 
+                             alt="Koleksi Museum" 
+                             class="w-full h-full object-cover img-zoom">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+                            <div>
+                                <h4 class="text-lg font-medium">Bangunan megah</h4>
+                                <p class="text-sm text-text-secondary">Peresmian Pada tahun 2014</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 3 — landscape -->
+                <div class="rounded-3xl overflow-hidden border border-white/5 group reveal-on-scroll delay-100">
+                    <div class="relative h-52 md:h-72 overflow-hidden">
+                        <img src="https://i.ibb.co.com/XfdtNSwq/stamp-20260512-162020.jpg" 
+                             alt="Arsip Akademik"
+                             class="w-full h-full object-cover img-zoom">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+                            <div>
+                                <h4 class="text-lg font-medium">Arsip Pendidikan</h4>
+                                <p class="text-sm text-text-secondary">Dokumentasi </p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 4 — landscape -->
+                <div class="rounded-3xl overflow-hidden border border-white/5 group reveal-on-scroll delay-200">
+                    <div class="relative h-52 md:h-72 overflow-hidden">
+                        <img src="https://i.ibb.co.com/RpSQWmPg/stamp-20260512-161958.jpg" 
+                             alt="Alat Pembelajaran Lama" 
+                             class="w-full h-full object-cover img-zoom">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+                            <div>
+                                <h4 class="text-lg font-medium">Koleksi Bersejarah</h4>
+                                <p class="text-sm text-text-secondary"Berbagai alat dan media pembelajaran tempo dulu menunjukkan perkembangan dunia pendidikan"</p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Gallery Item 5 — landscape full width -->
+                <div class="md:col-span-2 rounded-3xl overflow-hidden border border-white/5 group reveal-on-scroll delay-300">
+                    <div class="relative h-52 md:h-72 overflow-hidden">
+                        <img src="https://i.ibb.co.com/Q7WPS9Qs/stamp-20260512-161743.jpg" 
+                             alt=" Berbagai macam prasasti kuno" 
+                             class="w-full h-full object-cover img-zoom">
+                        <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent opacity-0 group-hover:opacity-100 transition-opacity duration-500 flex items-end p-6">
+                            <div>
+                                <h4 class="text-lg font-medium">Hasil dokumentasi</h4>
+                                <p class="text-sm text-text-secondary"></p>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- CTA SECTION -->
+    <section class="py-32 relative overflow-hidden">
+        <div class="absolute inset-0 bg-gradient-to-b from-bg via-surface/50 to-bg pointer-events-none"></div>
+        <div class="absolute top-1/2 left-1/2 -translate-x-1/2 -translate-y-1/2 w-[600px] h-[600px] bg-brand-gold/5 rounded-full blur-[200px] pointer-events-none animate-glow-pulse"></div>
+
+        <div class="max-w-4xl mx-auto px-6 text-center relative z-10">
+            <div class="reveal-on-scroll">
+                <div class="inline-flex items-center gap-2 px-4 py-2 rounded-full border border-brand-gold/20 bg-brand-gold/5 backdrop-blur-md mb-8">
+                    <i data-lucide="heart" class="w-4 h-4 text-brand-gold"></i>
+                    <span class="text-xs font-medium uppercase tracking-wider text-brand-gold">Mari Lestarikan</span>
+                </div>
+            </div>
+            
+            <h2 class="text-4xl md:text-6xl font-semibold tracking-tight mb-6 reveal-on-scroll delay-100">
+                Lestarikan Sejarah<br><span class="text-gradient-gold">Pendidikan</span>
+            </h2>
+            
+            <p class="text-lg md:text-xl font-light text-text-secondary leading-relaxed max-w-2xl mx-auto mb-12 reveal-on-scroll delay-200">
+                Museum Edukasi UM merupakan ruang penting untuk menjaga dan memperkenalkan sejarah pendidikan kepada generasi muda. Melalui koleksi alat pembelajaran, arsip akademik, dan dokumentasi bersejarah, museum ini menjadi sarana pembelajaran yang menghubungkan masa lalu, masa kini, dan masa depan dunia pendidikan.
+            </p>
+
+            <div class="flex flex-col sm:flex-row items-center justify-center gap-4 reveal-on-scroll delay-300">
+                <a href="#" class="px-8 py-4 bg-brand-gold text-black text-sm font-bold uppercase tracking-wide rounded-full hover:-translate-y-1 hover:shadow-[0_0_50px_rgba(255,200,0,0.4)] transition-all duration-300 flex items-center gap-2">
+                    <i data-lucide="share-2" class="w-4 h-4"></i>
+                    Bagikan Budaya Ini
+                </a>
+                <a href="#" class="px-8 py-4 border border-white/10 text-text-primary text-sm font-medium uppercase tracking-wide rounded-full hover:border-white/30 hover:-translate-y-1 transition-all duration-300 flex items-center gap-2">
+                    <i data-lucide="play" class="w-4 h-4"></i>
+                    Tonton Pertunjukan
+                </a>
+            </div>
+        </div>
+    </section>
+
+
+    <!-- FOOTER -->
+    <footer class="border-t border-white/5 py-16 bg-card">
+        <div class="max-w-7xl mx-auto px-6">
+            
+            <div class="grid grid-cols-1 md:grid-cols-4 gap-12 mb-12">
+                
+                <div class="md:col-span-2">
+                    <a href="#" class="flex items-center gap-3 mb-4">
+                        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-brand-gold to-brand-blue flex items-center justify-center">
+                            <i data-lucide="building-2"> class="w-5 h-5 text-black"></i>
+                        </div>
+                        <span class="tld"Museum<span class="text-brand-gold">Universitas Negeri Malang</span></span>
+                    </a>
+                    <p class="text-text-secondary font-light leading-relaxed max-w-md mb-6">
+                        Website edukasi tentang Museum Edukasi Universitas Negeri Malang yang menyajikan informasi sejarah, koleksi, dan pembelajaran interaktif. Dibuat untuk memperkenalkan dunia pendidikan, budaya, dan sejarah kepada generasi muda serta masyarakat luas.
+                    </p>
+                    <div class="flex items-center gap-4">
+                        <a href="#" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-text-dim hover:text-brand-gold hover:border-brand-gold/30 transition-all duration-300">
+                            <i data-lucide="instagram" class="w-4 h-4"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-text-dim hover:text-brand-blue hover:border-brand-blue/30 transition-all duration-300">
+                            <i data-lucide="twitter" class="w-4 h-4"></i>
+                        </a>
+                        <a href="#" class="w-10 h-10 rounded-full border border-white/10 flex items-center justify-center text-text-dim hover:text-red-500 hover:border-red-500/30 transition-all duration-300">
+                            <i data-lucide="youtube" class="w-4 h-4"></i>
+                        </a>
+                    </div>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-semibold uppercase tracking-wider mb-4">Navigasi</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#arti" class="text-text-secondary hover:text-brand-gold transition-colors text-sm">Tentang Museum</a></li>
+                        <li><a href="#sejarah" class="text-text-secondary hover:text-brand-gold transition-colors text-sm">Sejarah Museum UMㅤㅤ</a></li>
+                        <li><a href="#filosofi" class="text-text-secondary hover:text-brand-gold transition-colors text-sm">Koleksi Museum</a></li>
+                        <li><a href="#galeri" class="text-text-secondary hover:text-brand-gold transition-colors text-sm">Galeri</a></li>
+                    </ul>
+                </div>
+
+                <div>
+                    <h4 class="text-sm font-semibold uppercase tracking-wider mb-4">Referensi</h4>
+                    <ul class="space-y-3">
+                        <li><a href="#" class="text-text-secondary hover:text-brand-blue transition-colors text-sm">Universitas Negeri Malang</a></li>
+                        <li><a href="#" class="text-text-secondary hover:text-brand-blue transition-colors text-sm">Museum Edukasi UM</a></li>
+                        <li><a href="#" class="text-text-secondary hover:text-brand-blue transition-colors text-sm">Sumber Arsip</a></li>
+                        <li><a href="#" class="text-text-secondary hover:text-brand-blue transition-colors text-sm">Sumber Belajar Sejarah</a></li>
+                    </ul>
+                </div>
+            </div>
+
+            <div class="border-t border-white/5 pt-8 flex flex-col md:flex-row items-center justify-between gap-4">
+                <p class="text-sm text-text-dim">© 2026 Museum Edukasi Universitas Negeri Malang. Dibuat untuk pembelajaran dan pelestarian sejarah pendidikan. <span class="text-brand-gold">♥</span> FandiLana(2026).</p>
+                <p class="text-sm text-text-dim">Sumber Belajar Interaktif — Museum Edukasi UM</p>
+            </div>
+        </div>
+    </footer>
+
+
+    <!-- BACK TO TOP BUTTON -->
+    <button id="backToTop" class="fixed bottom-8 right-8 w-12 h-12 rounded-full bg-brand-gold text-black flex items-center justify-center shadow-lg opacity-0 pointer-events-none transition-all duration-300 hover:-translate-y-1 hover:shadow-[0_0_30px_rgba(255,200,0,0.4)] z-50">
+        <i data-lucide="arrow-up" class="w-5 h-5"></i>
+    </button>
+
+
+    <script>
+        lucide.createIcons();
+
+        const revealElements = document.querySelectorAll('.reveal-on-scroll, .photo-reveal');
+        
+        const revealObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    entry.target.classList.add('is-visible');
+                    revealObserver.unobserve(entry.target);
+                }
+            });
+        }, {
+            threshold: 0.1,
+            rootMargin: '0px 0px -50px 0px'
+        });
+
+        revealElements.forEach(el => revealObserver.observe(el));
+
+        const navbar = document.getElementById('navbar');
+        
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 50) {
+                navbar.classList.add('bg-bg/80', 'backdrop-blur-xl', 'border-b', 'border-white/5');
+            } else {
+                navbar.classList.remove('bg-bg/80', 'backdrop-blur-xl', 'border-b', 'border-white/5');
+            }
+        });
+
+        const menuToggle = document.getElementById('menuToggle');
+        const menuClose = document.getElementById('menuClose');
+        const mobileMenu = document.getElementById('mobileMenu');
+        const menuOverlay = document.getElementById('menuOverlay');
+        const mobileLinks = document.querySelectorAll('.mobile-link');
+
+        function openMenu() {
+            mobileMenu.classList.add('open');
+            menuOverlay.classList.remove('opacity-0', 'pointer-events-none');
+            menuOverlay.classList.add('opacity-100', 'pointer-events-auto');
+            document.body.style.overflow = 'hidden';
+        }
+
+        function closeMenu() {
+            mobileMenu.classList.remove('open');
+            menuOverlay.classList.add('opacity-0', 'pointer-events-none');
+            menuOverlay.classList.remove('opacity-100', 'pointer-events-auto');
+            document.body.style.overflow = '';
+        }
+
+        menuToggle.addEventListener('click', openMenu);
+        menuClose.addEventListener('click', closeMenu);
+        menuOverlay.addEventListener('click', closeMenu);
+
+        mobileLinks.forEach(link => {
+            link.addEventListener('click', closeMenu);
+        });
+
+        const backToTop = document.getElementById('backToTop');
+
+        window.addEventListener('scroll', () => {
+            if (window.scrollY > 500) {
+                backToTop.classList.remove('opacity-0', 'pointer-events-none');
+                backToTop.classList.add('opacity-100', 'pointer-events-auto');
+            } else {
+                backToTop.classList.add('opacity-0', 'pointer-events-none');
+                backToTop.classList.remove('opacity-100', 'pointer-events-auto');
+            }
+        });
+
+        backToTop.addEventListener('click', () => {
+            window.scrollTo({ top: 0, behavior: 'smooth' });
+        });
+
+        const sections = document.querySelectorAll('section[id]');
+        const navLinks = document.querySelectorAll('.nav-link');
+
+        const navObserver = new IntersectionObserver((entries) => {
+            entries.forEach(entry => {
+                if (entry.isIntersecting) {
+                    const id = entry.target.getAttribute('id');
+                    navLinks.forEach(link => {
+                        link.classList.remove('text-text-primary');
+                        link.classList.add('text-text-secondary');
+                    });
+                    const activeLink = document.querySelector(`.nav-link[href="#${id}"]`);
+                    if (activeLink) {
+                        activeLink.classList.add('text-text-primary');
+                        activeLink.classList.remove('text-text-secondary');
+                    }
+                }
+            });
+        }, {
+            rootMargin: '-20% 0px -70% 0px'
+        });
+
+        sections.forEach(section => navObserver.observe(section));
+    </script>
+
+</body>
+</html>
